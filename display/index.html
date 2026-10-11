@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Waiting Room Display</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    body {
+      background: #0d1b2a;
+      color: #f4f7fb;
+      overflow: hidden;
+    }
+    .display-screen {
+      height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 24px 32px;
+      gap: 20px;
+    }
+    .display-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    @media (max-width: 768px) {
+      .display-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .start-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 27, 42, 0.96);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      cursor: pointer;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body class="display-theme">
+  <!-- Start Overlay for Browser Audio Permission -->
+  <div id="start-overlay" class="start-modal">
+    <div style="font-size:clamp(1.8rem, 4cqi, 3rem);font-weight:700;margin-bottom:12px;color:#ffd166">
+      Click anywhere to start the display
+    </div>
+    <div style="color:var(--muted);font-size:1.1rem;max-width:540px">
+      Browsers block sound until user interaction. Clicking enables the two-tone audio chime and full screen.
+    </div>
+    <button class="btn btn-primary btn-lg" style="margin-top:24px">Start Display</button>
+  </div>
+
+  <div class="display-screen">
+    <!-- Offline Indicator -->
+    <div id="display-offline-bar" class="offline-bar hidden" style="border-radius:8px">
+      Display Offline · Queue Service Disconnected
+    </div>
+
+    <!-- Header -->
+    <header class="cq-header">
+      <div>
+        <h1 id="clinic-name" style="font-size:1.6rem">Clinic Queue</h1>
+        <div class="meta" id="service-point" style="font-size:1.1rem;color:#ffd166">Counter 1</div>
+      </div>
+      <div class="meta">
+        <span id="clock" style="font-size:1.1rem"></span>
+        <button id="btn-fullscreen" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.3);padding:6px 12px">Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main id="display-main" class="display-grid">
+      <!-- Now Serving Box -->
+      <div class="card card-center" style="background:#1b263b;border:2px solid rgba(255,209,102,0.3);padding:32px">
+        <div style="font-size:clamp(1.2rem, 3cqi, 2rem);text-transform:uppercase;letter-spacing:0.15em;color:#9db1c9">
+          Now Serving
+        </div>
+        <div id="display-serving-no" class="number-huge" style="color:#ffd166;margin:12px 0">
+          —
+        </div>
+        <div id="display-prompt" style="font-size:clamp(1.1rem, 2.5cqi, 1.8rem);color:#f4f7fb">
+          Please wait for your number
+        </div>
+      </div>
+
+      <!-- Side Panels: Up Next & Called Not Present -->
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <!-- Up Next -->
+        <div class="card" style="flex:1;background:#1b263b;padding:20px;display:flex;flex-direction:column">
+          <div style="font-weight:700;color:#9db1c9;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">
+            Up Next
+          </div>
+          <div id="display-up-next" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:1">
+            <span class="text-muted">None</span>
+          </div>
+        </div>
+
+        <!-- Called Not Present (No-shows) -->
+        <div class="card" style="flex:1;background:#1b263b;padding:20px;display:flex;flex-direction:column">
+          <div style="font-weight:700;color:#ff8a80;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">
+            Called, Not Present
+          </div>
+          <div id="display-noshows" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;flex:1">
+            <span class="text-muted">None</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer style="display:flex;justify-content:space-between;align-items:center;color:#9db1c9;font-size:1.1rem;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1)">
+      <div>Waiting in Room: <b id="display-waiting-count" style="color:#ffd166">0</b></div>
+      <div style="font-size:0.9rem">Sample Queue Service</div>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initDisplay } from '../assets/display.js';
+    initDisplay();
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clinic Queue — Demo Launcher</title>
+  <link rel="stylesheet" href="assets/common.css">
+  <style>
+    .launcher-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .screen-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+  </style>
+</head>
+<body>
+  <div class="cq-container" style="max-width:840px">
+    <header class="cq-header">
+      <div>
+        <h1 id="clinic-name">Clinic Queue</h1>
+        <div class="text-muted" style="font-size:0.9rem">Interactive Multi-Screen Browser Demo</div>
+      </div>
+      <div class="meta" id="clock"></div>
+    </header>
+
+    <!-- Intro Card -->
+    <main class="card" style="gap:16px">
+      <h2 style="margin-top:0;font-size:1.3rem">How to Run the Demo</h2>
+      <p style="margin:0;font-size:1.05rem;line-height:1.6">
+        This demo runs entirely in your browser without a backend server. Open the four screens below in separate tabs or windows of the same browser profile. They share state live through <code>localStorage</code> and Web Locks just like real hardware devices would.
+      </p>
+
+      <!-- Options & Multi-Open -->
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:600;cursor:pointer">
+          <input type="checkbox" id="chk-sized" checked>
+          Open as sized desktop windows (side-by-side view)
+        </label>
+        <button id="btn-open-all" class="btn btn-primary btn-lg">Open All Four Screens</button>
+      </div>
+
+      <div id="popup-hint" class="banner banner-warn hidden" style="margin-top:12px">
+        <span><b>Popup blocked:</b> Please allow popups for this site in your browser to open all four windows at once, or click the individual buttons below.</span>
+      </div>
+    </main>
+
+    <!-- Four Screen Buttons -->
+    <div class="launcher-grid">
+      <div class="screen-card">
+        <div>
+          <h3 style="margin:0 0 6px;font-size:1.15rem">1. Kiosk</h3>
+          <p class="text-muted" style="margin:0;font-size:0.85rem">Patient touch-screen: scan/type ID, get ticket, QR code & print.</p>
+        </div>
+        <button id="btn-open-kiosk" class="btn btn-outline btn-block">Open Kiosk</button>
+      </div>
+
+      <div class="screen-card">
+        <div>
+          <h3 style="margin:0 0 6px;font-size:1.15rem">2. Staff Panel</h3>
+          <p class="text-muted" style="margin:0;font-size:0.85rem">Counter PC / tablet: PIN gate (1234), Call next, recall, no-show, queue list.</p>
+        </div>
+        <button id="btn-open-staff" class="btn btn-outline btn-block">Open Staff</button>
+      </div>
+
+      <div class="screen-card">
+        <div>
+          <h3 style="margin:0 0 6px;font-size:1.15rem">3. Waiting Display</h3>
+          <p class="text-muted" style="margin:0;font-size:0.85rem">TV display: now serving, up next, no-shows, sound chime & flash animation.</p>
+        </div>
+        <button id="btn-open-display" class="btn btn-outline btn-block">Open Display</button>
+      </div>
+
+      <div class="screen-card">
+        <div>
+          <h3 style="margin:0 0 6px;font-size:1.15rem">4. Patient Phone</h3>
+          <p class="text-muted" style="margin:0;font-size:0.85rem">Mobile view: live place tracking, "You're next", call notifications.</p>
+        </div>
+        <button id="btn-open-patient" class="btn btn-outline btn-block">Open Patient</button>
+      </div>
+    </div>
+
+    <!-- Live Status Banner -->
+    <div class="card" style="background:var(--brand-light);border:1px solid var(--brand);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+        <div>Service Date: <b id="live-date">—</b></div>
+        <div>Now Serving: <b id="live-serving" style="color:var(--brand);font-size:1.15rem">—</b></div>
+        <div>Waiting: <b id="live-waiting" style="color:var(--brand);font-size:1.15rem">0</b></div>
+      </div>
+      <div>
+        <a href="#" id="link-latest-ticket" class="hidden" style="color:var(--brand);font-weight:600;text-decoration:none">
+          Open latest issued ticket →
+        </a>
+      </div>
+    </div>
+
+    <!-- Low-contrast Footer with Hidden Simulation Link -->
+    <footer style="margin-top:auto;padding:24px 0;display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;color:var(--muted)">
+      <div>Clinic Queue Demo · v0.2 Specification</div>
+      <div>
+        <a href="sim/" style="color:#b0bcc9;text-decoration:none">Simulation & Faults</a>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initLauncher } from './assets/launcher.js';
+    initLauncher();
+  </script>
+</body>
+</html>

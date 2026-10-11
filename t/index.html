@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Your Queue Ticket</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .patient-container {
+      max-width: 440px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16px;
+    }
+    .ticket-num-large {
+      font-size: clamp(3.5rem, 15cqi, 5.5rem);
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1;
+      margin: 4px 0 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="patient-container cq-container">
+    <header class="cq-header">
+      <div>
+        <h1 id="clinic-name">Clinic Queue</h1>
+        <div class="text-muted" style="font-size:0.85rem">Live Ticket Tracker</div>
+      </div>
+      <div class="meta" id="clock" style="font-size:0.85rem"></div>
+    </header>
+
+    <!-- Offline Banner -->
+    <div id="patient-offline-banner" class="banner banner-warn hidden" style="margin-top:10px">
+      <span>Connecting to queue service… (Offline)</span>
+    </div>
+
+    <!-- 1. Entry Card (No token in URL) -->
+    <main id="card-entry" class="card card-center" style="margin:auto 0;padding:32px 20px;gap:16px">
+      <h2 style="margin:0;font-size:1.4rem">Track Your Place</h2>
+      <p class="text-muted" style="margin:0;font-size:0.95rem">
+        Enter the ticket code from your printed receipt or kiosk screen.
+      </p>
+
+      <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+        <input type="text" id="input-code" class="input input-mono text-center" placeholder="UUID or full ticket URL" style="font-size:0.95rem">
+        <div id="entry-error" class="text-err hidden" style="font-size:0.85rem;font-weight:600">
+          Please enter a valid 36-character ticket code
+        </div>
+      </div>
+
+      <button id="btn-submit-code" class="btn btn-primary btn-block">Show My Ticket</button>
+      <small class="text-muted">Example: 7c1e2b0a-5d3f-4c8e-9a61-2f4b8d0e1a77</small>
+    </main>
+
+    <!-- 2. Live Ticket Display -->
+    <main id="card-ticket" class="card card-center hidden" style="margin:auto 0;padding:28px 20px;gap:16px">
+      <div class="text-muted" style="font-size:0.85rem;text-transform:uppercase;letter-spacing:0.1em;font-weight:600">
+        Your Queue Number
+      </div>
+      <div class="ticket-num-large" id="ticket-num">—</div>
+
+      <!-- Dynamic State Box -->
+      <div id="ticket-state-box" class="card card-center" style="width:100%;padding:18px">
+        <div style="font-size:1.4rem;font-weight:700">Checking…</div>
+      </div>
+      <p id="ticket-state-msg" class="text-muted" style="margin:0;font-size:0.9rem">
+        Stay nearby: this page updates automatically.
+      </p>
+
+      <!-- Meta Info Box -->
+      <div class="card" style="width:100%;background:var(--bg);border:none;padding:14px;font-size:0.9rem;display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between">
+          <span class="text-muted">Now Serving:</span>
+          <b id="ticket-now-serving" style="color:var(--brand)">—</b>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span class="text-muted">Service Counter:</span>
+          <span id="ticket-service-point">Counter 1</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span class="text-muted">Issued At:</span>
+          <span id="ticket-issued-time">—</span>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <a href="#" id="link-check-another" style="color:var(--muted);font-size:0.85rem;text-decoration:none">
+          ← Check another ticket
+        </a>
+      </div>
+    </main>
+
+    <!-- 3. Not Found / Expired Card -->
+    <main id="card-notfound" class="card card-center hidden" style="margin:auto 0;padding:32px 20px;gap:16px">
+      <h2 class="text-err" style="margin:0;font-size:1.4rem">Ticket Not Found</h2>
+      <p class="text-muted" style="margin:0;font-size:0.95rem">
+        This ticket code does not exist or has expired.
+        <br>Queue numbers reset daily.
+      </p>
+      <button id="btn-back-entry" class="btn btn-outline">Enter Another Code</button>
+    </main>
+
+    <footer class="text-center text-muted" style="font-size:0.8rem;padding:12px 0">
+      Sample Queue Service Demo · Patient Mobile View
+    </footer>
+  </div>
+
+  <script type="module">
+    import { initPatient } from '../assets/ticket.js';
+    initPatient();
+  </script>
+</body>
+</html>

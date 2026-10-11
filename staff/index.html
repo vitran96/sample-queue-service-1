@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff Call Panel</title>
+  <link rel="stylesheet" href="../assets/common.css">
+  <style>
+    .staff-container {
+      max-width: 960px;
+    }
+    .staff-serving-no {
+      font-size: clamp(3.5rem, 12cqi, 6rem);
+      font-weight: 800;
+      color: var(--brand);
+      line-height: 1.1;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="staff-container cq-container">
+    <!-- Offline Banner -->
+    <div id="staff-offline-banner" class="offline-bar hidden">
+      Connection Lost · Actions Disabled (Service Offline)
+    </div>
+
+    <!-- PIN Unlock Card -->
+    <main id="view-pin" class="card card-center" style="max-width:400px;margin:80px auto;gap:16px;padding:32px 24px">
+      <h2 style="margin:0;font-size:1.4rem">Staff Access</h2>
+      <p class="text-muted" style="margin:0;font-size:0.95rem">Enter staff PIN to unlock queue management.</p>
+      <div id="pin-hint" class="badge">Demo PIN: 1234</div>
+      <input type="password" id="input-pin" class="input input-mono text-center" placeholder="PIN" style="font-size:1.4rem;letter-spacing:0.3em;max-width:220px">
+      <div id="pin-error" class="text-err hidden" style="font-weight:600;font-size:0.9rem">Incorrect PIN</div>
+      <button id="btn-submit-pin" class="btn btn-primary btn-block" style="max-width:220px">Unlock Panel</button>
+    </main>
+
+    <!-- Main Staff Panel -->
+    <div id="view-panel" class="hidden" style="display:contents">
+      <header class="cq-header">
+        <div>
+          <h1 id="clinic-name">Clinic Queue</h1>
+          <div class="meta">
+            <span id="service-point">Counter 1</span> ·
+            <span id="clock"></span>
+          </div>
+        </div>
+        <button id="btn-lock" class="btn btn-outline" style="padding:6px 14px;font-size:0.85rem">Lock</button>
+      </header>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:16px">
+        <!-- Current Serving Card -->
+        <section class="card card-center">
+          <div class="text-muted" style="font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Now Serving</div>
+          <div class="staff-serving-no" id="cur-no">—</div>
+          <div id="cur-status" style="margin-bottom:6px"><span class="badge">No active ticket</span></div>
+          <div class="text-muted" id="cur-time" style="font-size:0.85rem;margin-bottom:16px">—</div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px">
+            <button id="btn-call-next" class="btn btn-primary btn-lg">Call Next</button>
+            <div style="display:flex;gap:10px">
+              <button id="btn-recall" class="btn btn-outline" style="flex:1">Call Again</button>
+              <button id="btn-requeue" class="btn btn-outline" style="flex:1">Back to Queue</button>
+            </div>
+            <div>
+              <button id="btn-noshow-trigger" class="btn btn-outline btn-block text-err">Mark No-Show</button>
+              <div id="noshow-inline-confirm" class="hidden" style="display:flex;gap:8px;align-items:center;background:var(--err-bg);padding:8px;border-radius:8px">
+                <span style="font-size:0.85rem;font-weight:600;color:var(--err)">Confirm No-Show?</span>
+                <button id="btn-noshow-confirm" class="btn btn-danger" style="padding:6px 12px;font-size:0.85rem">Yes</button>
+                <button id="btn-noshow-cancel" class="btn btn-outline" style="padding:6px 12px;font-size:0.85rem">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Waiting Overview Card -->
+        <section class="card" style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <h2 style="margin:0;font-size:1.15rem">Waiting Queue</h2>
+            <span class="badge badge-brand">Waiting: <b id="count-waiting">0</b></span>
+          </div>
+          <div>Up Next: <b id="next-ticket-label" style="font-size:1.2rem;color:var(--brand)">—</b></div>
+          <div style="flex:1">
+            <div class="text-muted" style="font-size:0.85rem;margin-bottom:6px">Patients in line:</div>
+            <div id="waiting-chips" style="display:flex;flex-wrap:wrap;gap:6px;max-height:160px;overflow-y:auto"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tickets Table / Filter Tabs -->
+      <section class="card">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <button id="tab-waiting" class="btn btn-primary">Waiting (<span id="tab-badge-waiting">0</span>)</button>
+          <button id="tab-called" class="btn btn-outline">No-Show / Missed (<span id="tab-badge-called">0</span>)</button>
+          <button id="tab-all" class="btn btn-outline">All Today (<span id="tab-badge-all">0</span>)</button>
+        </div>
+
+        <div style="overflow-x:auto">
+          <table class="cq-table">
+            <thead>
+              <tr>
+                <th>Ticket</th>
+                <th>Status</th>
+                <th>Badge</th>
+                <th>Issued At</th>
+                <th>Calls</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <tr>
+                <td colspan="6" class="text-center text-muted" style="padding:20px">Loading queue data…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initStaff } from '../assets/staff.js';
+    initStaff();
+  </script>
+</body>
+</html>

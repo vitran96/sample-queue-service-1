@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clinic Queue — Simulation Control</title>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body>
+  <div class="cq-container">
+    <header class="cq-header">
+      <div>
+        <h1 id="clinic-name">Clinic Queue</h1>
+        <div class="badge badge-warn" style="margin-top:4px">Simulation & Fault Control (Hidden)</div>
+      </div>
+      <div class="meta">
+        <span id="sim-clock"></span>
+        <a href="../" class="btn btn-outline" style="padding:6px 12px;font-size:0.85rem">Launcher</a>
+      </div>
+    </header>
+
+    <!-- Data Controls -->
+    <section class="card">
+      <h2 style="margin-top:0;font-size:1.1rem">1. Data & Scenarios</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px">
+        <button id="btn-seed-morning" class="btn btn-primary">Morning in progress (A008–A018)</button>
+        <button id="btn-seed-busy" class="btn btn-outline">Busy (25 waiting)</button>
+        <button id="btn-seed-empty" class="btn btn-outline">Empty day</button>
+        <button id="btn-seed-end" class="btn btn-outline">End of day (All served)</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <button id="btn-reset-today" class="btn btn-outline">Reset Today's Queue (keep history)</button>
+        <button id="btn-clear-all" class="btn btn-danger">Clear All Demo Data (cq:*)</button>
+      </div>
+    </section>
+
+    <!-- Tickets Generator -->
+    <section class="card">
+      <h2 style="margin-top:0;font-size:1.1rem">2. Tickets Generator</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px">
+        <span>Add waiting tickets:</span>
+        <button id="btn-add-1" class="btn btn-outline">+1 Ticket</button>
+        <button id="btn-add-5" class="btn btn-outline">+5 Tickets</button>
+        <button id="btn-add-10" class="btn btn-outline">+10 Tickets</button>
+        <button id="btn-issue-one" class="btn btn-primary">Issue One Now</button>
+      </div>
+      <div id="issued-ticket-info" class="card hidden" style="background:var(--brand-light);border-color:var(--brand);margin-top:10px">
+        <div>Issued Ticket: <b id="issued-ticket-no" style="font-size:1.4rem;color:var(--brand)">—</b></div>
+        <div style="margin:6px 0;font-family:monospace;font-size:0.9rem">Token: <span id="issued-ticket-token"></span></div>
+        <div style="display:flex;gap:10px">
+          <button id="btn-copy-token" class="btn btn-outline" style="padding:6px 12px">Copy Code</button>
+          <a id="link-open-patient" target="_blank" class="btn btn-primary" style="padding:6px 12px">Open in Patient View</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Faults & Latency -->
+    <section class="card">
+      <h2 style="margin-top:0;font-size:1.1rem">3. Faults & Network Latency</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;align-items:center">
+        <div>
+          <label style="display:block;margin-bottom:6px;font-weight:600">Simulate Outage:</label>
+          <button id="btn-service-down" class="btn btn-outline btn-block">Service Down: OFF</button>
+        </div>
+        <div>
+          <label for="sel-printer" style="display:block;margin-bottom:6px;font-weight:600">Kiosk Printer:</label>
+          <select id="sel-printer" class="input">
+            <option value="ok">Printer OK (Normal)</option>
+            <option value="fail">Printer Fails (Paper Jam)</option>
+          </select>
+        </div>
+        <div>
+          <label for="sel-latency" style="display:block;margin-bottom:6px;font-weight:600">Simulated Latency:</label>
+          <select id="sel-latency" class="input">
+            <option value="0">0 ms (Instant)</option>
+            <option value="600">600 ms (Visible loading states)</option>
+            <option value="2000">2000 ms (Slow network)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Time Simulation -->
+    <section class="card">
+      <h2 style="margin-top:0;font-size:1.1rem">4. Time Simulation</h2>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <button id="btn-next-day" class="btn btn-outline">Simulate Next Day (+25h)</button>
+        <button id="btn-real-time" class="btn btn-outline">Back to Real Time</button>
+        <span id="clock-offset-info" class="badge">Clock: Real time</span>
+      </div>
+    </section>
+
+    <!-- Events Log & JSON Inspection -->
+    <section class="card">
+      <h2 style="margin-top:0;font-size:1.1rem">5. Inspect Live Data & Event Log</h2>
+      <p class="text-muted" style="margin-top:-6px;font-size:0.9rem">
+        Proves patient privacy: No patient IDs are stored in any <code>cq:*</code> storage key.
+      </p>
+
+      <div style="display:flex;gap:10px;margin-bottom:12px">
+        <button id="btn-export" class="btn btn-outline">Export JSON Backup</button>
+        <label class="btn btn-outline" style="cursor:pointer">
+          Import JSON Backup
+          <input type="file" id="file-import" accept=".json" style="display:none">
+        </label>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:16px">
+        <div>
+          <div style="font-weight:600;margin-bottom:6px">Recent SSE/Storage Events:</div>
+          <div id="event-log" style="height:260px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px"></div>
+        </div>
+        <div>
+          <div style="font-weight:600;margin-bottom:6px">Live Storage (JSON):</div>
+          <pre id="json-viewer" style="height:260px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px;margin:0;font-size:0.8rem"></pre>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <details>
+          <summary style="cursor:pointer;font-weight:600">Advanced: Raw JSON Editor & Injector</summary>
+          <textarea id="json-editor" class="input input-mono" rows="8" style="margin-top:8px;font-size:0.85rem"></textarea>
+          <button id="btn-save-json" class="btn btn-primary" style="margin-top:8px">Validate & Save</button>
+        </details>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { initSimulation } from '../assets/sim.js';
+    initSimulation();
+  </script>
+</body>
+</html>
